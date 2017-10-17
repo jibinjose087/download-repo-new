@@ -7,6 +7,6 @@
 
     - name: download a file from git repo
       get_url:
-        url: https://raw.githubusercontent.com/jibinjose087/demorepo/master/demorepo-master.zip
-        dest: /tmp/demorepo-master.zip
+        url: https://github.com/ansarpalakottal/testJob/blob/master/test.zip
+        dest: /tmp/test.zip
         force: yes
