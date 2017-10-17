@@ -7,6 +7,6 @@
 
     - name: download a file from git repo
       get_url:
-        url: https://github.com/ansarpalakottal/testJob/blob/master/test.zip
-        dest: /tmp/test.zip
+        url: http://18.216.19.92:8081/artifactory/jibin-repo/JBoss.cmd
+        dest: /tmp/JBoss.cmd
         force: yes
