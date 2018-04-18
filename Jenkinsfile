@@ -1,6 +1,6 @@
-#!groovy
+#!groovy​
 pipeline {
-    agent ec2-slave
+    agent any
         tools { 
         maven 'Maven 3.5.3' 
             }
