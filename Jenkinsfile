@@ -23,6 +23,10 @@ pipeline {
                 steps {
                 echo "deployed"                  
             }
+            post {
+                success {
+                    echo "Successfull" 
+            }
           }
         }
     }
