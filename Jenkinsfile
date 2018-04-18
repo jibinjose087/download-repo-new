@@ -17,8 +17,10 @@ pipeline {
             stage ('package stage') {
                 steps {
                   sh  '''
-                        mkdir -p output                 
-                        sh mvn clean compile
+                        mkdir -p output
+                        pwd
+                        ls -l
+                        sh /usr/local/maven clean compile
                     '''
                   writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
                   writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
@@ -31,6 +33,9 @@ pipeline {
             post {
                 success {
                     archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
+                always { 
+                    cleanWs()
+                }
             }
           }
         }
