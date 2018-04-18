@@ -18,10 +18,10 @@ pipeline {
                 steps {
                   sh  '''
                         mkdir -p output                 
+                        sh mvn clean compile
                     '''
                   writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
                   writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
-                  sh mvn clean compile
                   }
                 }
             stage ('archive stage') {
