@@ -1,9 +1,6 @@
 pipeline {
     agent any
     
-    environment {
-        AWS_BIN = '/usr/bin/aws'
-    }
     stages {
         stage("Parameterized stage") {
             steps {
