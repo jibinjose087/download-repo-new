@@ -7,7 +7,7 @@ agent any
         stage('Stage 1') {
             steps {
                     // capture the approval details in approvalMap.
-                approvalMap = input id: 'AWS', message: 'Enter the respective fields', ok: 'Proceed?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: 'Environments', name: 'EnvType'), string(defaultValue: 'AppName', description: '', name: 'InstanceType')], submitter: '"admin, bob"'
+                input id: 'AWS', message: 'Enter the respective fields', ok: 'Proceed?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: 'Environments', name: 'EnvType'), string(defaultValue: 'AppName', description: '', name: 'InstanceType')], submitter: '"admin, bob"'
         }
     }
         stage('Stage 2') {
