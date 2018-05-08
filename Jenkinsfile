@@ -1,35 +1,32 @@
-def approvalMap             // collect data from approval step
+#!/usr/bin/env groovy
 
 pipeline {
     agent any
-
-    stages {
-        stage('Stage 1') {
-            steps {
-
-                 script {
-                        // capture the approval details in approvalMap.
-            approvalMap = input id: 'AWS', message: 'Enter the respective fields', ok: 'Proceed?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: 'Environments', name: 'EnvType'), string(defaultValue: 'AppName', description: '', name: 'InstanceType', trim: false)], submitter: '"admin, bob"'
-                     }
-
-            
-            }
-        }
-        stage('Stage 2') {
-
-            steps {
-                // print the details gathered from the approval
-                echo "Hello second stage"
-            }
-        }
+        parameters {
+            choice(
+                name: 'Nodes',
+                choices:"Linux\nMac",
+                description: "Choose Node!")
+            choice(
+                name: 'Versions',
+                choices:"3.4\n4.4",
+                description: "Build for which version?" )
+            string(
+                name: 'Path',
+                defaultValue:"/home/pencillr/builds/",
+                description: "Where to put the build!")
     }
-    
-    post {
-      failure { 
-            echo 'Mail send to approver'
-        }
-      always { 
-            cleanWs()
+    stages {
+        stage("build") {
+            steps {
+                script {
+                    build(job: "builder-job",
+                        parameters:
+                        [string(name: 'Nodes', value: "${params.Nodes}"),
+                        string(name: 'Versions', value: "${params.Versions}"),
+                        string(name: 'Path', value: "${params.Path}")])
+                }
+            }
         }
     }
 }
