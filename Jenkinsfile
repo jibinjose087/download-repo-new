@@ -17,7 +17,7 @@ pipeline {
     }
     
         post { 
-        success { 
+        changed { 
             echo 'Current build is success'
         }
         failure { 
