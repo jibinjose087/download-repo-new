@@ -3,7 +3,7 @@ def getProjectName() {
 }
 
 def getJDKVersion() {
-    return 'jdk1.8.0_101'
+    return 'jdk1.8.0_171'
 }
 
 def getMavenConfig() {
@@ -61,8 +61,8 @@ pipeline {
      * some of the supported tools - maven, jdk, gradle
      */
     tools {
-        jdk 'jdk1.7'
-        maven 'mvn3.5.0'
+        jdk 'jdk1.8'
+        maven 'mvn2.2.1'
     }
 
     /**
@@ -144,98 +144,7 @@ pipeline {
             }
         }
 
-        stage('Maven Install') {
-            steps {
-                script {
-                    /**
-                     * Override maven in this stage
-                     * you can also use 'tools {maven: "$mavenLocation"}'
-                     *
-                     * globalMavenSettingsConfig: Select a global maven settings element from File Config Provider
-                     * jdk: Select a JDK installation
-                     * maven: Select a Maven installation
-                     */
-                    withMaven(globalMavenSettingsConfig: "$mavenConfig", jdk: "$JDKVersion", maven: "$mavenLocation") {
-                        /**
-                         * To proceed to the next stage even if the current stage failed,
-                         * enclose this stage in a try-catch block
-                         */
-                        try {
-                            sh "mvn clean install"
-                        } catch (Exception err) {
-                            echo 'Maven clean install failed'
-                            currentBuild.result = 'FAILURE'
-                        } finally {
-                            publishHTMLReports('Reports')
-                        }
-                    }
-                }
-            }
-        }
 
-        stage('Quality Analysis') {
-            steps {
-                /**
-                 * makes use of one single agent, and spins off 2 runs of the steps inside each parallel branch
-                 */
-                parallel(
-                        "Integration Test": {
-                            echo 'Run integration tests'
-                        },
-                        "Sonar Scan": {
-                            sh "mvn sonar:sonar"
-                        }
-                )
-            }
-        }
-
-        stage('Transfer Script') {
-            steps {
-                // provide SSH credentials to builds via a ssh-agent in Jenkins
-                sshagent(['test-key']) {
-                    sh "scp test.sh ${identity}:${path}"
-                }
-            }
-        }
-
-        stage('Execute Script') {
-            steps {
-                script {
-                    // provide SSH credentials to builds via a ssh-agent in Jenkins
-                    sshagent(['test-key']) {
-                        // AWS credentials binding - each binding will define an environment variable active within the scope of the step
-                        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
-                                          accessKeyVariable: 'AWS_ACCESS_KEY',
-                                          credentialsId: 'test',
-                                          secretKeyVariable: 'AWS_SECRET_KEY']]) {
-                            sh """
-                                ssh ${identity} "chmod 755 test.sh && ./test.sh --aws-access-key ${AWS_ACCESS_KEY} " \
-                                    "--aws-secret-key ${AWS_SECRET_KEY}"
-                            """
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Collect Reports') {
-            steps {
-                echo "Reports directory: ${workspace}/target/view"
-                zip dir: "${workspace}/target", zipFile: "$reportZipFile" // Create a zip file of content in the workspace
-            }
-        }
-
-        stage('Archive reports in S3') {
-            steps {
-                // withAWS step provides authorization for the nested steps
-                withAWS(region: 'us-east-1', profile: '') {
-                    // Upload a file/folder from the workspace to an S3 bucket
-                    s3Upload(file: "$reportZipFile",
-                            bucket: '',
-                            path: "$s3ReportPath")
-                }
-            }
-        }
     }
 
     /**
