@@ -6,19 +6,19 @@ pipeline {
     stages {
         stage('First stage') {
             steps {
-                eho 'Hello, Maven'
+                echo 'Hello, Maven'
             }
         }
         stage('Second stage') {
             steps {
-                echo 'Hello, JDK'
+                eho 'Hello, JDK'
             }
         }
     }
     
         post { 
-        always { 
-            echo 'I will always say Hello again!'
+        success { 
+            echo 'Current build is success'
         }
         changed { 
             echo 'Previous one is success but this one failed'
