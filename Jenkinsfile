@@ -14,7 +14,7 @@ pipeline {
                 }
                }
                 echo "${env.RELEASE_SCOPE}"
-                sh aws s3 ls
+                sh ${AWS_BIN} s3 ls
             }
         }
     }
