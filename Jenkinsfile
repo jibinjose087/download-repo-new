@@ -14,7 +14,7 @@ pipeline {
                 }
                }
                 echo "${env.RELEASE_SCOPE}"
-                aws s3 ls
+                sh aws s3 ls
             }
         }
     }
