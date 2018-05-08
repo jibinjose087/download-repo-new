@@ -7,7 +7,7 @@ pipeline {
         stage('Stage 1') {
             steps {
 
-            echso "First stage"
+            input message: 'Enter the respective fields', ok: 'Proceed?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: 'Environments', name: 'EnvType'), string(defaultValue: 'AppName', description: '', name: 'InstanceType', trim: false)], submitter: '"admin, bob"'
             }
         }
         stage('Stage 2') {
@@ -22,6 +22,9 @@ pipeline {
     post {
       failure { 
             echo 'Mail send to approver'
+        }
+      always { 
+            cleanWs()
         }
     }
 }
