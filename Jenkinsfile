@@ -17,7 +17,8 @@ pipeline {
                 }
             stage ('archive stage') {
                 steps {
-                echo "deployed"                  
+                sh echo "deployed"                  
+            }
             }
             post {
                 success {
