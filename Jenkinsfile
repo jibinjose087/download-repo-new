@@ -7,7 +7,7 @@ pipeline {
         stage('Stage 1') {
             steps {
 
-            echo "First stage"
+            echso "First stage"
             }
         }
         stage('Stage 2') {
