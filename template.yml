@@ -1,0 +1,71 @@
+## CloudFormation Template.
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS cloudformation template for creating new instance
+
+Parameters:
+    SSDevopsKey:
+        Description: Existing key pair
+        Type: AWS::EC2::KeyPair::KeyName
+        Default: ec2-ss-common-key
+        AllowedValues:
+            - ec2-ss-common-key
+            - ec2-cloudformation-key
+        ConstraintDescription: Must be an existing key Pair
+
+    SSDevopsInstanceType:
+        Description: Ec2 instance type
+        Type: String
+        Default: "t2.micro"
+        AllowedValues:
+            - t2.nano
+            - t2.micro
+
+Mappings:
+    SSDevopsRegionMap:
+        us-west-2:
+            AMI: "ami-d874e0a0"
+Resources:
+    SSDevopsSG:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: "Sec group for webnode"
+            SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: '80'
+              ToPort: '80'
+              CidrIp: 0.0.0.0/0
+            - IpProtocol: tcp
+              FromPort: '22'
+              ToPort: '22'
+              CidrIp: 0.0.0.0/0
+
+    SSDevopsEc2Instance:
+        Type: AWS::EC2::Instance
+        Metadata: 
+          AWS::CloudFormation::Init: 
+            config: 
+              sources: 
+                /tmp: "https://s3-us-west-2.amazonaws.com/ss-s3-common/TMAN/TMAN-APP.zip"
+
+        Properties:
+            KeyName: !Ref SSDevopsKey
+            SecurityGroups:
+                - !Ref SSDevopsSG
+            ImageId: !FindInMap [SSDevopsRegionMap, !Ref "AWS::Region", AMI]
+            InstanceType: !Ref SSDevopsInstanceType
+            UserData:
+              Fn::Base64: !Sub |
+                 #!/bin/bash -xe 
+                 yum install wget httpd php -y
+                 cd /home/ec2-user
+                 wget https://aws-codedeploy-us-west-2.s3.amazonaws.com/latest/install
+                 chmod +x ./install
+                 ./install auto
+                 service httpd start
+                 echo "Load Balancer web Page !!!!" > /var/www/html/index.html
+
+Outputs:
+    EC2PublicIp:
+        Description: Ec2 instance public IP address
+        Value: !GetAtt SSDevopsEc2Instance.PublicIp

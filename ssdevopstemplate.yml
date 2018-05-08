@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SSDevopsEC2
+
+Parameters:
+    EnvType:
+        Description: The environemnt which we are going create
+        Default: Dev
+        Type: String
+        AllowedValues:
+            - Dev
+            - Stage
+            - prod
+        ConstraintDescription: Must specify the environment name
+    AppName:
+        Description: Enter the application name
+        Default: TMAN
+        Type: String
+        AllowedValues:
+            - TMAN
+            - PPL
+            - AIS
+        ConstraintDescription: Must specify the application name
+
+    SSDevOpskey:
+        Description: Existing key pair used for SSDevops
+        Type: AWS::EC2::KeyPair::KeyName
+        Default: ec2-ss-common-key
+        AllowedValues:
+            - ec2-ss-common-key
+            - ec2-cloudformation-key
+        ConstraintDescription: Must be an existing key pair
+
+    SSDevopsInstanceType:
+        Description: Ec2 instance
+        Type: String
+        Default: "t2.micro"
+        AllowedValues:
+            - t2.nano
+            - t2.micro
+
+    SSDevopsVPC:
+        Description: Security group for VPC
+        Type: AWS::EC2::VPC::Id
+        Default: vpc-94765eed
+        AllowedValues:
+            - vpc-94765eed
+
+    SSDevopsSubnet:
+        Description: subnet details
+        Type: AWS::EC2::Subnet::Id
+        Default: subnet-93a5c8c9
+        AllowedValues:
+            - subnet-93a5c8c9
+
+Mappings:
+    SSDevopsRegionMap:
+        us-west-2:
+            AMI: "ami-d874e0a0"
+            
+Resources:
+    SSDevopsSGWeb:
+        Description: Security group for EC2 Instance
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Security group for web instance
+            VpcId: !Ref SSDevopsVPC
+            SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: '80'
+              ToPort: '80'
+              CidrIp: 0.0.0.0/0
+            - IpProtocol: tcp
+              FromPort: '22'
+              ToPort: '22'
+              CidrIp: 0.0.0.0/0
+            Tags:
+            - Key: Name
+              Value: !Join [ "-", [ !Ref EnvType, !Ref AppName, "SSDevopsSGWeb" ] ]
+
+    SSDevopsEc2WebInstance:
+        Description: Ec2 instance for web
+        Type: AWS::EC2::Instance
+        Properties:
+            ImageId: !FindInMap [ SSDevopsRegionMap, !Ref "AWS::Region", AMI ]
+            KeyName: !Ref SSDevOpskey
+            InstanceType: !Ref SSDevopsInstanceType
+            NetworkInterfaces:
+              -
+                DeleteOnTermination: true
+                Description: NetworkInterfaces vpc details
+                DeviceIndex: 0
+                SubnetId: !Ref SSDevopsSubnet
+                AssociatePublicIpAddress: true
+                GroupSet:
+                  - !Ref SSDevopsSGWeb
+            Tags:
+            - Key: Name
+              Value: !Join [ "-", [ !Ref EnvType, !Ref AppName, "SSDevopsEc2WebInstance" ] ]

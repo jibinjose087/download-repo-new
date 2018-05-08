@@ -1,9 +1,0 @@
----
-- hosts: dev
-  tasks:
-    - name: Ping
-      command: date
-    - name: Print message
-      debug: msg="Hello from Ansible!!"
-    - name: Download Tomcat
-      get_url: url=http://redrockdigimark.com/apachemirror/tomcat/tomcat-7/v7.0.82/bin/apache-tomcat-7.0.82.tar.gz dest=/opt/ansiblepull/apache-tomcat-7.0.61.tar.gz
