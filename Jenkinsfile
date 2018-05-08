@@ -73,15 +73,7 @@ pipeline {
                         submoduleCfg: [],
                         userRemoteConfigs: scm.userRemoteConfigs
                 ]
-                // copy managed files to workspace
-                script {
-                    if(params.USE_INPUT_DUNS) {
-                        configFileProvider([configFile(fileId: '609999e4-446c-4705-a024-061ed7ca2a11',
-                                targetLocation: 'input/')]) {
-                            echo 'Managed file copied to workspace'
-                        }
-                    }
-                }
+
             }
         }
 
