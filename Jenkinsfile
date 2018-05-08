@@ -20,7 +20,7 @@ pipeline {
         success { 
             echo 'Current build is success'
         }
-        changed { 
+        failure { 
             echo 'Previous one is success but this one failed'
         }
     }
