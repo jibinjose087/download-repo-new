@@ -1,11 +1,8 @@
 pipeline {
     agent any
     
-    options {
-    skipDefaultCheckout true
-            }
-    tools { 
-        aws 'aws-cli' 
+    environment {
+        AWS_BIN = '/usr/bin/aws'
     }
     stages {
         stage("Parameterized stage") {
@@ -17,6 +14,7 @@ pipeline {
                 }
                }
                 echo "${env.RELEASE_SCOPE}"
+                aws s3 ls
             }
         }
     }
