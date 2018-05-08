@@ -19,13 +19,12 @@ pipeline {
     stages {
         stage("build") {
             steps {
-                script {
-                    build(job: "builder-job",
-                        parameters:
-                        [string(name: 'Nodes', value: "${params.Nodes}"),
-                        string(name: 'Versions', value: "${params.Versions}"),
-                        string(name: 'Path', value: "${params.Path}")])
-                }
+                
+           // print the details gathered from the approval
+            echo "Node: ${params.Nodes}"
+            echo "Versions: ${params.Versions}"
+            echo "Path: ${params.Path}"
+                
             }
         }
     }
