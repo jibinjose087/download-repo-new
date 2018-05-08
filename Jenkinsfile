@@ -10,7 +10,7 @@ pipeline {
             timeout(60) {                // timeout waiting for input after 60 minutes
                  script {
                         // capture the approval details in approvalMap.
-            input id: 'AWS', message: 'Enter the respective fields', ok: 'Proceed?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: 'Environments', name: 'EnvType'), string(defaultValue: 'AppName', description: '', name: 'InstanceType', trim: false)], submitter: '"admin, bob"'
+            approvalMap = input id: 'AWS', message: 'Enter the respective fields', ok: 'Proceed?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: 'Environments', name: 'EnvType'), string(defaultValue: 'AppName', description: '', name: 'InstanceType', trim: false)], submitter: '"admin, bob"'
                      }
                 }
             
