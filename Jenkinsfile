@@ -18,4 +18,10 @@ pipeline {
             }
         }
     }
+    
+    post {
+      failure { 
+            echo 'Mail send to approver'
+        }
+    }
 }
