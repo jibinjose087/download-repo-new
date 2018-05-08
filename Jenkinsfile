@@ -2,17 +2,6 @@ def getProjectName() {
     return 'JenkinsPipeline'
 }
 
-def getJDKVersion() {
-    return 'jdk1.8.0_171'
-}
-
-def getMavenConfig() {
-    return 'maven-config'
-}
-
-def getMavenLocation() {
-    return 'M2_HOME'
-}
 
 def getEnvironment() {
     return  'QA\n' +
@@ -24,13 +13,6 @@ def getEmailRecipients() {
     return ''
 }
 
-def getReportZipFile() {
-    return "Reports_Build_${BUILD_NUMBER}.zip"
-}
-
-def getS3ReportPath() {
-    return "$projectName"
-}
 
 def publishHTMLReports(reportName) {
     // Publish HTML reports (HTML Publisher plugin)
@@ -54,15 +36,6 @@ pipeline {
         node {
             label '' // Execute the Pipeline on an agent available in the Jenkins environment with the provided label
         }
-    }
-
-    /**
-     * tools to auto-install and put on the PATH
-     * some of the supported tools - maven, jdk, gradle
-     */
-    tools {
-        jdk 'jdk1.8'
-        maven 'mvn2.2.1'
     }
 
     /**
