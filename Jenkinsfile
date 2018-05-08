@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('First stage') {
             steps {
-                echo 'Hello, Maven'
+                eho 'Hello, Maven'
             }
         }
         stage('Second stage') {
@@ -15,9 +15,13 @@ pipeline {
             }
         }
     }
+    
         post { 
         always { 
             echo 'I will always say Hello again!'
+        }
+        changed { 
+            echo 'Previous one is success but this one failed'
         }
     }
     
