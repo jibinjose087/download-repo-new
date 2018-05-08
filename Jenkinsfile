@@ -1,33 +1,15 @@
-#!groovy​
 pipeline {
-    agent any
-        tools { 
-
+    agent any 
+    stages {
+        stage('First stage') {
+            steps {
+                echo 'Hello, Maven'
             }
-        stages {
-            stage ('Compile stage') {
-                steps {
-                sh  echo "first stage"
-                      }
-                }
-            stage ('package stage') {
-                steps {
-                  sh  echo "second stage"
-                  }
-                }
-            stage ('archive stage') {
-                steps {
-                sh echo "deployed"                  
+        }
+        stage('Second stage') {
+            steps {
+                echo 'Hello, JDK'
             }
-            }
-            post {
-                success {
-                      echo "success"                  
-                always { 
-                    cleanWs()
-                }
-            }
-          }
         }
     }
-  }
+}
