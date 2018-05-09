@@ -19,10 +19,22 @@ pipeline {
           }
         }
         
-        stage ('STACK NAME stage') {
+        stage ('STACK_NAME stage') {
         steps {
             echo "${UserInput.STACK_NAME}"
           }
+        }
+    }
+
+        post { 
+        changed { 
+            echo 'Current build is success'
+        }
+        failure { 
+            echo 'Previous one is success but this one failed'
+        }
+                always { 
+            echo 'Email sent successfully'
         }
     }
 }
