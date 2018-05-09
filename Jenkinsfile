@@ -1,26 +1,23 @@
+#!groovy​
 pipeline {
     agent any
-    
-    stages {
-        stage("Parameterized stage") {
-            steps {
-            timeout(1) {
-                script {
-                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
-                    parameters: [choice(name: 'EnvType', choices: 'Dev\nStage\nProd', description: 'Enter the environment details'), string(defaultValue: '', description: 'Enter the instance type', name: 'InstanceType')]
+        stages {
+            stage ('Input Parameter passing') {
+                steps {
+                 script {
+                input id: 'Cloudformation', message: 'Enter the Input Details', ok: 'Are you sure?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: '', name: 'ENV'), string(defaultValue: '', description: '', name: 'STACK_NAME', trim: false), string(defaultValue: '', description: '', name: 'APP', trim: false), choice(choices: ['t2.micro'], description: '', name: 'SSDevopsInstanceType')], submitter: 'Admin', submitterParameter: 'Admin'
+                    }
+                      }
                 }
-               }
-                echo "${env.RELEASE_SCOPE}"
+            stage ('package stage') {
+                steps {
+                  echo "second stage"
+                  }
+                }
+            stage ('archive stage') {
+                steps {
+                echo "deployed"                  
             }
+          }
         }
-        
-       stage("AWS stage") {
-        steps {
-            sh aws s3 ls
-        }
-    }
-        
-        
-        
-    }
-}
+  }
