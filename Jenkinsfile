@@ -19,7 +19,7 @@ pipeline {
           }
         }
         
-        stage ('package stage') {
+        stage ('STACK NAME stage') {
         steps {
             echo "${UserInput.STACK_NAME}"
           }
