@@ -18,7 +18,7 @@ pipeline {
 
         stage ('package stage') {
             steps {
-            echo "${UserInput.SSDevopsInstanceType}"
+            build job: 'Cloudformation-Dev-Job-Status-check', parameters: [string(name: 'STACK_NAME', value: 'UserInput.STACK_NAME')], propagate: false, quietPeriod: 60
             }
         }
 
