@@ -5,8 +5,9 @@ pipeline {
             stage ('Input Parameter passing') {
                 steps {
                  script {
-                input id: 'Cloudformation', message: 'Enter the Input Details', ok: 'Are you sure?', parameters: [choice(choices: ['Dev', 'Stage', 'Prod'], description: '', name: 'ENV'), string(defaultValue: '', description: '', name: 'STACK_NAME', trim: false), string(defaultValue: '', description: '', name: 'APP', trim: false), choice(choices: ['t2.micro'], description: '', name: 'SSDevopsInstanceType')], submitter: 'Admin', submitterParameter: 'Admin'
-                    }
+                // capture the approval details in approvalMap.
+                input id: 'SSAWS', message: 'Enter the Input Details', ok: 'Proceed?', parameters: [choice(choices: 'Dev\nStage\nProd', description: 'Choose the environemnt', name: 'ENV'), string(defaultValue: '', description: '', name: 'STACK_NAME'), string(defaultValue: '', description: '', name: 'APP'), choice(choices: ['t2.micro'], description: '', name: 'SSDevopsInstanceType')], submitter: 'Admin', submitterParameter: 'APPROVER'
+            } 
                       }
                 }
             stage ('package stage') {
