@@ -28,11 +28,11 @@ pipeline {
 
         stage ('package stage') {
             steps {
-        res = build job: 'Cloudformation-Dev-Job-Status-check', parameters: [[$class: 'StringParameterValue', name: 'STACK_NAME', value: "$UserInput.STACK_NAME"]]
-        echo "THE VALUE IS $res.buildVariables.STACK_NAME"
+            properties([parameters([string(defaultValue: '', description: '', name: 'STACK_NAME', trim: false)])])
+            build job: 'Cloudformation-Dev-Job-Status-check', parameters: [string(name: 'STACK_NAME', value: '${STACK_NAME}')], propagate: false, quietPeriod: 60
             }
         }
-        
+
         stage ('STACK_NAME stage') {
             steps {
             echo "${UserInput.STACK_NAME}"
