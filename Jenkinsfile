@@ -1,22 +1,13 @@
 pipeline {
     agent any
-    parameters {
-        choice(
-            // choices are a string of newline separated values
-            // https://issues.jenkins-ci.org/browse/JENKINS-41180
-            choices: 'greeting\nsilence',
-            description: '',
-            name: 'REQUESTED_ACTION')
-    }
-
     stages {
-        stage ('Speak') {
-            when {
-                // Only say hello if a "greeting" is requested
-                expression { params.REQUESTED_ACTION == 'greeting' }
-            }
+        stage("foo") {
             steps {
-                echo "Hello, bitwiseman!"
+                script {
+                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+                }
+                echo "${env.RELEASE_SCOPE}"
             }
         }
     }
